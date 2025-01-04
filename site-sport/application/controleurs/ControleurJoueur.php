@@ -1,6 +1,6 @@
 <?php
 // application/controleurs/ControleurJoueur.php
-//test
+
 require_once '../librairie/Database.php';
 require_once '../application/modeles/Joueur.php';
 
