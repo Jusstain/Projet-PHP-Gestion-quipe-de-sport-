@@ -1,97 +1,81 @@
 <?php
-// public/index.php
-
-// Configurer les paramètres de session avant de démarrer la session
-ini_set('session.cookie_httponly', 1);
-ini_set('session.cookie_secure', 1); // Assurez-vous d'utiliser HTTPS
-ini_set('session.use_strict_mode', 1);
-
 session_start();
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../application/controleurs/ControleurAuthentification.php';
+require_once __DIR__ . '/../application/controleurs/ControleurJoueur.php';
+require_once __DIR__ . '/../application/controleurs/ControleurMatch.php';
+require_once __DIR__ . '/../application/controleurs/ControleurStatistique.php';
 
-require_once '../configuration/config.php';
-require_once '../librairie/Database.php';
+// Check authentication
+if(!isset($_SESSION['connecte']) && !strpos($route, 'connexion')) {
+    header('Location: ' . BASE_URL . 'connexion');
+    exit();
+}
 
-// Autoload des classes
-spl_autoload_register(function ($class_name) {
-    $chemins = [
-        "../application/controleurs/$class_name.php",
-        "../application/modeles/$class_name.php",
-    ];
+// Simple routing
+$route = $_SERVER['REQUEST_URI'];
+$base_path = dirname($_SERVER['SCRIPT_NAME']);
+$route = str_replace($base_path, '', $route);
 
-    foreach ($chemins as $chemin) {
-        if (file_exists($chemin)) {
-            require_once $chemin;
-            return;
-        }
-    }
-});
-
-// Récupérer la requête URI
-$requete = $_SERVER['REQUEST_URI'];
-$chemin_script = dirname($_SERVER['SCRIPT_NAME']);
-$chemin = str_replace($chemin_script, '', $requete);
-$chemin = trim($chemin, '/');
-
-// Routage simple basé sur l'URL
-switch ($chemin) {
-    case '':
-    case 'connexion.php':
+switch($route) {
+    // Authentication routes
+    case '/connexion':
         $controleur = new ControleurAuthentification();
         $controleur->connexion();
         break;
-    case 'inscription.php':
-        $controleur = new ControleurAuthentification();
-        $controleur->inscription();
-        break;
-    case 'deconnexion.php':
+    case '/deconnexion':
         $controleur = new ControleurAuthentification();
         $controleur->deconnexion();
         break;
-    case 'joueurs/liste.php':
+
+    // Player routes
+    case '/joueurs/liste':
         $controleur = new ControleurJoueur();
         $controleur->liste();
         break;
-    case 'joueurs/ajouter.php':
+    case '/joueurs/ajouter':
         $controleur = new ControleurJoueur();
         $controleur->ajouter();
         break;
-    case 'joueurs/modifier.php':
+    case '/joueurs/modifier':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
-        $controleur->modifier();
+        $controleur->modifier($id);
         break;
-    case 'joueurs/supprimer.php':
+    case '/joueurs/supprimer':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
-        $controleur->supprimer();
+        $controleur->supprimer($id);
         break;
-    case 'matchs/liste.php':
+
+    // Match routes
+    case '/matchs/liste':
         $controleur = new ControleurMatch();
         $controleur->liste();
         break;
-    case 'matchs/ajouter.php':
+    case '/matchs/ajouter':
         $controleur = new ControleurMatch();
         $controleur->ajouter();
         break;
-    case 'matchs/modifier.php':
+    case '/matchs/selection':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurMatch();
-        $controleur->modifier();
+        $controleur->selectionnerJoueurs($id);
         break;
-    case 'matchs/supprimer.php':
+    case '/matchs/evaluer':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurMatch();
-        $controleur->supprimer();
+        $controleur->evaluerJoueurs($id);
         break;
-    case 'matchs/evaluer.php':
-        $controleur = new ControleurMatch();
-        $controleur->evaluer();
+
+    // Statistics route
+    case '/statistiques':
+        $controleur = new ControleurStatistique();
+        $controleur->afficher();
         break;
-    case 'selections/selectionner_joueurs.php':
-        $controleur = new ControleurSelection();
-        $controleur->selectionnerJoueurs();
-        break;
-    case 'statistiques/index.php':
-        $controleur = new ControleurStatistiques();
-        $controleur->index();
-        break;
-    default:
-        echo "Page non trouvée.";
+
+    default: 
+        header("HTTP/1.0 404 Not Found");
+        require_once __DIR__ . '/../application/vues/erreurs/404.php';
         break;
 }

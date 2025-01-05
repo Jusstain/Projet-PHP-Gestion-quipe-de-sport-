@@ -6,31 +6,47 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css">
 </head>
 <body>
-    <?php include '../application/vues/partials/header.php'; ?>
-
+    <nav class="header">
+        <a href="<?= BASE_URL ?>joueurs/liste">Joueurs</a>
+        <a href="<?= BASE_URL ?>matchs/liste">Matchs</a>
+        <a href="<?= BASE_URL ?>statistiques">Statistiques</a>
+        <a href="<?= BASE_URL ?>deconnexion">Déconnexion</a>
+    </nav>
     <div class="container">
         <h2>Ajouter un Match</h2>
-        <?php if(isset($erreur)): ?>
-            <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
+        
+        <?php if (!empty($this->erreurs)): ?>
+            <div class="erreurs">
+                <?php foreach ($this->erreurs as $erreur): ?>
+                    <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
-        <form action="" method="POST">
-            <label>Date et Heure :</label>
-            <input type="datetime-local" name="date_match" required><br>
+        
+        <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <div class="form-group">
+                <label for="date_heure">Date et heure :</label>
+                <input type="datetime-local" id="date_heure" name="date_heure" required>
+            </div>
 
-            <label>Adversaire :</label>
-            <input type="text" name="adversaire" required><br>
+            <div class="form-group">
+                <label for="equipe_adverse">Équipe adverse :</label>
+                <input type="text" id="equipe_adverse" name="equipe_adverse" required>
+            </div>
 
-            <label>Lieu :</label>
-            <select name="lieu" required>
-                <option value="Domicile">Domicile</option>
-                <option value="Extérieur">Extérieur</option>
-            </select><br>
+            <div class="form-group">
+                <label for="lieu">Lieu :</label>
+                <select id="lieu" name="lieu" required>
+                    <option value="Domicile">Domicile</option>
+                    <option value="Extérieur">Extérieur</option>
+                </select>
+            </div>
 
-            <label>Résultat :</label>
-            <input type="text" name="resultat" placeholder="e.g., Victoire, Défaite, Nul"><br>
-
-            <button type="submit">Ajouter</button>
+            <button type="submit" class="btn-submit">Ajouter le match</button>
         </form>
+        
+        <a href="<?= BASE_URL ?>matchs/liste" class="btn">Retour à la liste</a>
     </div>
 </body>
 </html>

@@ -6,45 +6,74 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css">
 </head>
 <body>
-    <?php include '../application/vues/partials/header.php'; ?>
-
+    <nav class="header">
+        <a href="<?= BASE_URL ?>joueurs/liste">Joueurs</a>
+        <a href="<?= BASE_URL ?>matchs/liste">Matchs</a>
+        <a href="<?= BASE_URL ?>statistiques">Statistiques</a>
+        <a href="<?= BASE_URL ?>deconnexion">Déconnexion</a>
+    </nav>
     <div class="container">
         <h2>Ajouter un Joueur</h2>
-        <?php if(isset($erreur)): ?>
-            <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
+        
+        <?php if (!empty($this->erreurs)): ?>
+            <div class="erreurs">
+                <?php foreach ($this->erreurs as $erreur): ?>
+                    <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
-        <form action="" method="POST">
-            <label>Prénom :</label>
-            <input type="text" name="prenom" required><br>
+        
+        <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <div class="form-group">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required>
+            </div>
 
-            <label>Nom :</label>
-            <input type="text" name="nom" required><br>
+            <div class="form-group">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" required>
+            </div>
 
-            <label>Numéro de Licence :</label>
-            <input type="text" name="numero_licence" required><br>
+            <div class="form-group">
+                <label for="numero_licence">Numéro de licence :</label>
+                <input type="text" id="numero_licence" name="numero_licence" required>
+            </div>
 
-            <label>Date de Naissance :</label>
-            <input type="date" name="date_naissance" required><br>
+            <div class="form-group">
+                <label for="date_naissance">Date de naissance :</label>
+                <input type="date" id="date_naissance" name="date_naissance" required>
+            </div>
 
-            <label>Taille (cm) :</label>
-            <input type="number" name="taille" step="0.1" required><br>
+            <div class="form-group">
+                <label for="taille">Taille (en m) :</label>
+                <input type="number" id="taille" name="taille" step="0.01" required>
+            </div>
 
-            <label>Poids (kg) :</label>
-            <input type="number" name="poids" step="0.1" required><br>
+            <div class="form-group">
+                <label for="poids">Poids (en kg) :</label>
+                <input type="number" id="poids" name="poids" required>
+            </div>
 
-            <label>Statut :</label>
-            <select name="statut" required>
-                <option value="Actif">Actif</option>
-                <option value="Blessé">Blessé</option>
-                <option value="Suspendu">Suspendu</option>
-                <option value="Absent">Absent</option>
-            </select><br>
+            <div class="form-group">
+                <label for="statut">Statut :</label>
+                <select id="statut" name="statut" required>
+                    <option value="Actif">Actif</option>
+                    <option value="Blessé">Blessé</option>
+                    <option value="Suspendu">Suspendu</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
 
-            <label>Commentaires :</label>
-            <textarea name="commentaires"></textarea><br>
+            <div class="form-group">
+                <label for="commentaire">Commentaire :</label>
+                <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+            </div>
 
-            <button type="submit">Ajouter</button>
+            <button type="submit" class="btn-submit">Ajouter le joueur</button>
         </form>
+        
+        <a href="<?= BASE_URL ?>joueurs/liste" class="btn">Retour à la liste</a>
     </div>
 </body>
 </html>

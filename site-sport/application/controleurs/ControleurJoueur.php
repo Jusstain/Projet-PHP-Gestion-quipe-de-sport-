@@ -1,120 +1,111 @@
 <?php
-// application/controleurs/ControleurJoueur.php
-
-require_once '../librairie/Database.php';
-require_once '../application/modeles/Joueur.php';
+require_once __DIR__ . '/../../lib/Database.php';
+require_once __DIR__ . '/../modeles/Joueur.php';
 
 class ControleurJoueur {
     private $connexion;
     private $joueur;
+    private $erreurs = [];
 
-    public function __construct(){
-        $database = new DatabaseConnection();
-        $this->connexion = $database->getConnection();
+    public function __construct() {
+        $this->connexion = Database::getInstance()->getConnection();
         $this->joueur = new Joueur($this->connexion);
     }
 
-    // Liste des joueurs
-    public function liste(){
-        $this->verifierAuthentification();
-        $joueurs = $this->joueur->getAll();
-        require_once '../application/vues/joueurs/liste.php';
+    public function liste() {
+        $joueurs = $this->joueur->getTousLesJoueurs();
+        require_once __DIR__ . '/../vues/joueurs/liste.php';
     }
 
-    // Ajouter un joueur
-    public function ajouter(){
-        $this->verifierAuthentification();
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            // Récupération et validation des données
-            $this->joueur->prenom = trim($_POST['prenom']);
-            $this->joueur->nom = trim($_POST['nom']);
-            $this->joueur->numero_licence = trim($_POST['numero_licence']);
-            $this->joueur->date_naissance = $_POST['date_naissance'];
-            $this->joueur->taille = trim($_POST['taille']);
-            $this->joueur->poids = trim($_POST['poids']);
-            $this->joueur->statut = $_POST['statut'];
-            $this->joueur->commentaires = trim($_POST['commentaires']);
+    private function verifierCSRF() {
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            die('Invalid CSRF token');
+        }
+    }
 
-            // Validation des données
-            if(empty($this->joueur->prenom) || empty($this->joueur->nom) || empty($this->joueur->numero_licence)){
-                $erreur = "Les champs prénom, nom et numéro de licence sont requis.";
-            } else {
-                if($this->joueur->ajouter()){
-                    header("Location: " . BASE_URL . "joueurs/liste.php");
-                    exit();
+    public function ajouter() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifierCSRF();
+            if ($this->validerDonnees($_POST)) {
+                if ($this->joueur->ajouter($_POST)) {
+                    header('Location: ' . BASE_URL . 'joueurs/liste');
+                    exit;
                 } else {
-                    $erreur = "Erreur lors de l'ajout du joueur. Le numéro de licence peut déjà exister.";
+                    $this->erreurs['db'] = "Erreur lors de l'ajout";
                 }
             }
         }
-        require_once '../application/vues/joueurs/ajouter.php';
+        require_once __DIR__ . '/../vues/joueurs/ajouter.php';
     }
 
-    // Modifier un joueur
-    public function modifier(){
-        $this->verifierAuthentification();
-        if(!isset($_GET['id'])){
-            header("Location: " . BASE_URL . "joueurs/liste.php");
-            exit();
-        }
-
-        $joueur = $this->joueur->getById($_GET['id']);
-        if(!$joueur){
-            header("Location: " . BASE_URL . "joueurs/liste.php");
-            exit();
-        }
-
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            // Récupération et validation des données
-            $this->joueur->id = $_GET['id'];
-            $this->joueur->prenom = trim($_POST['prenom']);
-            $this->joueur->nom = trim($_POST['nom']);
-            $this->joueur->numero_licence = trim($_POST['numero_licence']);
-            $this->joueur->date_naissance = $_POST['date_naissance'];
-            $this->joueur->taille = trim($_POST['taille']);
-            $this->joueur->poids = trim($_POST['poids']);
-            $this->joueur->statut = $_POST['statut'];
-            $this->joueur->commentaires = trim($_POST['commentaires']);
-
-            // Validation des données
-            if(empty($this->joueur->prenom) || empty($this->joueur->nom) || empty($this->joueur->numero_licence)){
-                $erreur = "Les champs prénom, nom et numéro de licence sont requis.";
-            } else {
-                if($this->joueur->modifier()){
-                    header("Location: " . BASE_URL . "joueurs/liste.php");
-                    exit();
+    public function modifier($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifierCSRF();
+            if ($this->validerDonnees($_POST)) {
+                if ($this->joueur->modifier($id, $_POST)) {
+                    header('Location: ' . BASE_URL . 'joueurs/liste');
+                    exit;
                 } else {
-                    $erreur = "Erreur lors de la mise à jour du joueur.";
+                    $this->erreurs['db'] = "Erreur lors de la modification";
                 }
             }
         }
-
-        require_once '../application/vues/joueurs/modifier.php';
+        $joueur = $this->joueur->getJoueurParId($id);
+        require_once __DIR__ . '/../vues/joueurs/modifier.php';
     }
 
-    // Supprimer un joueur
-    public function supprimer(){
-        $this->verifierAuthentification();
-        if(!isset($_GET['id'])){
-            header("Location: " . BASE_URL . "joueurs/liste.php");
-            exit();
-        }
-
-        if($this->joueur->supprimer($_GET['id'])){
-            header("Location: " . BASE_URL . "joueurs/liste.php");
-            exit();
-        } else {
-            $erreur = "Erreur lors de la suppression du joueur.";
-            // Vous pouvez rediriger avec un message d'erreur ou afficher directement
+    public function supprimer($id) {
+        if ($this->joueur->supprimer($id)) {
+            header('Location: ' . BASE_URL . 'joueurs/liste');
+            exit;
         }
     }
 
-    // Méthode pour vérifier l'authentification
-    private function verifierAuthentification(){
-        session_start();
-        if(!isset($_SESSION['utilisateur_id'])){
-            header("Location: " . BASE_URL . "connexion.php");
-            exit();
+    private function validerDonnees($data) {
+        $this->erreurs = [];
+        
+        // Validate name and firstname
+        if (empty($data['nom']) || strlen($data['nom']) > 50) {
+            $this->erreurs['nom'] = "Le nom doit contenir entre 1 et 50 caractères";
         }
+        
+        if (empty($data['prenom']) || strlen($data['prenom']) > 50) {
+            $this->erreurs['prenom'] = "Le prénom doit contenir entre 1 et 50 caractères";
+        }
+
+        // Validate license number
+        if (!preg_match("/^[0-9]{8}$/", $data['numero_licence'])) {
+            $this->erreurs['numero_licence'] = "Le numéro de licence doit contenir 8 chiffres";
+        }
+
+        // Validate date of birth
+        $date_naissance = new DateTime($data['date_naissance']);
+        $aujourdhui = new DateTime();
+        if ($date_naissance > $aujourdhui) {
+            $this->erreurs['date_naissance'] = "La date de naissance ne peut pas être dans le futur";
+        }
+
+        // Validate height (between 1.00m and 2.50m)
+        if (!is_numeric($data['taille']) || $data['taille'] < 1.00 || $data['taille'] > 2.50) {
+            $this->erreurs['taille'] = "La taille doit être comprise entre 1.00 et 2.50 mètres";
+        }
+
+        // Validate weight (between 30kg and 150kg)
+        if (!is_numeric($data['poids']) || $data['poids'] < 30 || $data['poids'] > 150) {
+            $this->erreurs['poids'] = "Le poids doit être compris entre 30 et 150 kg";
+        }
+
+        // Validate status
+        $statuts_valides = ['Actif', 'Blessé', 'Suspendu', 'Absent'];
+        if (!in_array($data['statut'], $statuts_valides)) {
+            $this->erreurs['statut'] = "Le statut n'est pas valide";
+        }
+
+        // Validate comment length
+        if (strlen($data['commentaire']) > 500) {
+            $this->erreurs['commentaire'] = "Le commentaire ne doit pas dépasser 500 caractères";
+        }
+
+        return empty($this->erreurs);
     }
 }

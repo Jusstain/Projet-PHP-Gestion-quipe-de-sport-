@@ -1,113 +1,137 @@
-/* public/css/styles.css */
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-.header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 0;
-}
-
-.header nav {
-    width: 80%;
-    margin: auto;
-    display: flex;
-    justify-content: space-around;
-}
-
-.header nav a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
+/* Form Container */
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
+/* Form Groups */
+.form-group {
+    margin-bottom: 1rem;
 }
 
-.btn {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #28a745;
-    color: #fff;
-    text-decoration: none;
-    margin-bottom: 20px;
-    border-radius: 5px;
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
 }
 
-.btn:hover {
-    background-color: #218838;
-}
-
-table {
+.form-group input,
+.form-group select,
+.form-group textarea {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-table, th, td {
+    padding: 0.5rem;
     border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-.erreur {
-    color: red;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="number"],
-select,
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: #fff;
+/* Buttons */
+.btn-submit {
+    background: #28a745;
     border: none;
+    color: white;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0069d9;
+.btn-submit:hover {
+    background: #45a049;
 }
 
-a {
-    color: #007bff;
+/* Error Messages */
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #ffebee;
+    border-radius: 4px;
 }
 
-a:hover {
-    text-decoration: underline;
+/* Layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navigation */
+.header {
+    background: #333;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.header a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+th, td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #f5f5f5;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+/* Error messages */
+.erreurs {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+/* Stats cards */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Error Page */
+.error-page {
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-page h1 {
+    color: #dc3545;
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
