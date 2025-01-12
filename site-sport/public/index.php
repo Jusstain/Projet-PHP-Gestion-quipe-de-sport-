@@ -1,28 +1,49 @@
 <?php
+// Set proper encoding
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+
+// Démarrer la session avant toute chose
 session_start();
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug with proper encoding
+error_log("Route actuelle: " . $_SERVER['REQUEST_URI']);
+error_log("POST data: " . print_r($_POST, true));
+error_log("Session data: " . print_r($_SESSION, true));
+
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../application/controleurs/ControleurAuthentification.php';
 require_once __DIR__ . '/../application/controleurs/ControleurJoueur.php';
 require_once __DIR__ . '/../application/controleurs/ControleurMatch.php';
 require_once __DIR__ . '/../application/controleurs/ControleurStatistique.php';
 
-// Check authentication
-if(!isset($_SESSION['connecte']) && !strpos($route, 'connexion')) {
-    header('Location: ' . BASE_URL . 'connexion');
-    exit();
-}
-
-// Simple routing
+// Get the current route
 $route = $_SERVER['REQUEST_URI'];
 $base_path = dirname($_SERVER['SCRIPT_NAME']);
 $route = str_replace($base_path, '', $route);
 
+// Check if we're on the login page
+$isLoginPage = $route === '/connexion' || $route === '/';
+
+// Check authentication
+if (!isset($_SESSION['connecte']) && !$isLoginPage) {
+    header('Location: ' . BASE_URL . 'connexion');
+    exit();
+} elseif (isset($_SESSION['connecte']) && $isLoginPage) {
+    header('Location: ' . BASE_URL . 'joueurs/liste');
+    exit();
+}
+
 switch($route) {
-    // Authentication routes
+    case '/':
     case '/connexion':
         $controleur = new ControleurAuthentification();
         $controleur->connexion();
         break;
+        
     case '/deconnexion':
         $controleur = new ControleurAuthentification();
         $controleur->deconnexion();
@@ -33,15 +54,18 @@ switch($route) {
         $controleur = new ControleurJoueur();
         $controleur->liste();
         break;
+        
     case '/joueurs/ajouter':
         $controleur = new ControleurJoueur();
         $controleur->ajouter();
         break;
+        
     case '/joueurs/modifier':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
         $controleur->modifier($id);
         break;
+        
     case '/joueurs/supprimer':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
@@ -53,15 +77,18 @@ switch($route) {
         $controleur = new ControleurMatch();
         $controleur->liste();
         break;
+        
     case '/matchs/ajouter':
         $controleur = new ControleurMatch();
         $controleur->ajouter();
         break;
+        
     case '/matchs/selection':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurMatch();
         $controleur->selectionnerJoueurs($id);
         break;
+        
     case '/matchs/evaluer':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurMatch();

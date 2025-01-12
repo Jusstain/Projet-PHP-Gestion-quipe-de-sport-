@@ -12,21 +12,22 @@
         <a href="<?= BASE_URL ?>statistiques">Statistiques</a>
         <a href="<?= BASE_URL ?>deconnexion">Déconnexion</a>
     </nav>
-    <div class="form-container">
+    <div class="container">
         <h2>Connexion</h2>
         
-        <?php if (!empty($this->erreurs)): ?>
-            <div class="erreurs">
-                <?php foreach ($this->erreurs as $erreur): ?>
-                    <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST" action="">
+        <form method="POST" action="<?= BASE_URL ?>connexion" class="form-container">
+            <?php if (!empty($erreurs)): ?>
+                <div class="erreurs">
+                    <?php foreach ($erreurs as $erreur): ?>
+                        <p class="erreur"><?= htmlspecialchars($erreur) ?></p>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+            
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            
             <div class="form-group">
-                <label for="username">Nom d'utilisateur :</label>
+                <label for="username">Identifiant :</label>
                 <input type="text" id="username" name="username" required>
             </div>
 
