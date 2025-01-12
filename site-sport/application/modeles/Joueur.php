@@ -68,8 +68,13 @@ class Joueur {
     }
 
     public function supprimer($id) {
-        $query = "DELETE FROM " . $this->table . " WHERE id_joueur = :id";
-        $stmt = $this->connexion->prepare($query);
-        return $stmt->execute([':id' => $id]);
+        try {
+            $query = "DELETE FROM " . $this->table . " WHERE id_joueur = :id";
+            $stmt = $this->connexion->prepare($query);
+            return $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            error_log("Erreur de suppression : " . $e->getMessage());
+            return false;
+        }
     }
 }

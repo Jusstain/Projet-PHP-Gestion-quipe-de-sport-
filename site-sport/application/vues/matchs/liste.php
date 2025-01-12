@@ -42,9 +42,11 @@
                     <td><?= htmlspecialchars($match['equipe_adverse']) ?></td>
                     <td><?= htmlspecialchars($match['lieu']) ?></td>
                     <td><?= htmlspecialchars($match['resultat'] ?? 'Non joué') ?></td>
-                    <td>
-                        <a href="<?= BASE_URL ?>matchs/selection?id=<?= $match['id_rencontre'] ?>">Sélectionner joueurs</a>
-                        <a href="<?= BASE_URL ?>matchs/evaluer?id=<?= $match['id_rencontre'] ?>">Évaluer</a>
+                    <td class="actions">
+                        <a href="<?= BASE_URL ?>matchs/selection?id=<?= $match['id_rencontre'] ?>" 
+                           class="btn-select">Sélectionner joueurs</a>
+                        <a href="<?= BASE_URL ?>matchs/evaluer?id=<?= $match['id_rencontre'] ?>" 
+                           class="btn-evaluate">Évaluer</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

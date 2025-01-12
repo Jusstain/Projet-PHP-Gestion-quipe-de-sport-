@@ -68,10 +68,18 @@ class ControleurJoueur {
             exit;
         }
 
-        if ($this->joueur->supprimer($id)) {
-            header('Location: ' . BASE_URL . 'joueurs/liste');
-            exit;
+        try {
+            if ($this->joueur->supprimer($id)) {
+                $_SESSION['message'] = "Joueur supprimé avec succès";
+            } else {
+                $_SESSION['erreur'] = "Erreur lors de la suppression du joueur";
+            }
+        } catch (Exception $e) {
+            $_SESSION['erreur'] = "Erreur lors de la suppression du joueur";
         }
+
+        header('Location: ' . BASE_URL . 'joueurs/liste');
+        exit;
     }
 
     private function validerDonnees($data) {

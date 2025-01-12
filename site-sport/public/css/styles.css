@@ -293,26 +293,45 @@ tr:hover {
 .actions {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-edit, .btn-delete, .btn-select, .btn-evaluate {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    height: 36px;
 }
 
 .btn-edit {
-    background: #ffc107;
-    color: #000;
-    padding: 5px 10px;
-    border-radius: 4px;
-    text-decoration: none;
+    background: var(--warning);
+    color: white;
 }
 
 .btn-delete {
-    background: #dc3545;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    text-decoration: none;
+    background: var(--danger);
+    color: white;
 }
 
-.btn-edit:hover, .btn-delete:hover {
-    opacity: 0.8;
+.btn-select {
+    background: var(--success);
+    color: white;
+}
+
+.btn-evaluate {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-edit:hover, .btn-delete:hover, .btn-select:hover, .btn-evaluate:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
 }
 
 /* Responsive typography */

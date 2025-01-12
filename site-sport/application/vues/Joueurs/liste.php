@@ -47,7 +47,7 @@
                         <a href="<?= BASE_URL ?>joueurs/modifier?id=<?= $joueur['id_joueur'] ?>" class="btn btn-edit">Modifier</a>
                         <a href="<?= BASE_URL ?>joueurs/supprimer?id=<?= $joueur['id_joueur'] ?>" 
                            class="btn-delete" 
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?')">Supprimer</a>
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?');">Supprimer</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

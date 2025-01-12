@@ -66,7 +66,7 @@ switch($route) {
         $controleur->modifier($id);
         break;
         
-    case '/joueurs/supprimer':
+    case (preg_match('/^\/joueurs\/supprimer/', $route) ? true : false):
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
         $controleur->supprimer($id);
