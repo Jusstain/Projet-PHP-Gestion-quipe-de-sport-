@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Modifier un Joueur</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <nav class="header">
@@ -23,7 +24,7 @@
             </div>
         <?php endif; ?>
         
-        <form method="POST" action="">
+        <form method="POST" action="" class="form-container">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
             <div class="form-group">
                 <label for="nom">Nom :</label>
@@ -46,22 +47,22 @@
             </div>
 
             <div class="form-group">
-                <label for="taille">Taille (en m) :</label>
+                <label for="taille">Taille (m) :</label>
                 <input type="number" id="taille" name="taille" step="0.01" value="<?= htmlspecialchars($joueur['taille']) ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="poids">Poids (en kg) :</label>
+                <label for="poids">Poids (kg) :</label>
                 <input type="number" id="poids" name="poids" value="<?= htmlspecialchars($joueur['poids']) ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="statut">Statut :</label>
                 <select id="statut" name="statut" required>
-                    <option value="Actif" <?= $joueur['statut'] == 'Actif' ? 'selected' : '' ?>>Actif</option>
-                    <option value="Blessé" <?= $joueur['statut'] == 'Blessé' ? 'selected' : '' ?>>Blessé</option>
-                    <option value="Suspendu" <?= $joueur['statut'] == 'Suspendu' ? 'selected' : '' ?>>Suspendu</option>
-                    <option value="Absent" <?= $joueur['statut'] == 'Absent' ? 'selected' : '' ?>>Absent</option>
+                    <option value="Actif" <?= $joueur['statut'] === 'Actif' ? 'selected' : '' ?>>Actif</option>
+                    <option value="Blessé" <?= $joueur['statut'] === 'Blessé' ? 'selected' : '' ?>>Blessé</option>
+                    <option value="Suspendu" <?= $joueur['statut'] === 'Suspendu' ? 'selected' : '' ?>>Suspendu</option>
+                    <option value="Absent" <?= $joueur['statut'] === 'Absent' ? 'selected' : '' ?>>Absent</option>
                 </select>
             </div>
 
@@ -70,10 +71,11 @@
                 <textarea id="commentaire" name="commentaire" rows="4"><?= htmlspecialchars($joueur['commentaire']) ?></textarea>
             </div>
 
-            <button type="submit" class="btn-submit">Modifier le joueur</button>
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                <a href="<?= BASE_URL ?>joueurs/liste" class="btn btn-secondary">Annuler</a>
+            </div>
         </form>
-        
-        <a href="<?= BASE_URL ?>joueurs/liste" class="btn">Retour à la liste</a>
     </div>
 </body>
 </html>

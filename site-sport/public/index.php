@@ -60,7 +60,7 @@ switch($route) {
         $controleur->ajouter();
         break;
         
-    case '/joueurs/modifier':
+    case (preg_match('/^\/joueurs\/modifier/', $route) ? true : false):
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurJoueur();
         $controleur->modifier($id);

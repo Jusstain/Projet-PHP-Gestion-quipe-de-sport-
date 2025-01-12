@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Liste des Joueurs</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <nav class="header">
@@ -30,10 +31,7 @@
                 <tr>
                     <th>Nom</th>
                     <th>Prénom</th>
-                    <th>N° Licence</th>
-                    <th>Date de naissance</th>
-                    <th>Taille</th>
-                    <th>Poids</th>
+                    <th>Licence</th>
                     <th>Statut</th>
                     <th>Actions</th>
                 </tr>
@@ -44,13 +42,12 @@
                     <td><?= htmlspecialchars($joueur['nom']) ?></td>
                     <td><?= htmlspecialchars($joueur['prenom']) ?></td>
                     <td><?= htmlspecialchars($joueur['numero_licence']) ?></td>
-                    <td><?= htmlspecialchars($joueur['date_naissance']) ?></td>
-                    <td><?= htmlspecialchars($joueur['taille']) ?> m</td>
-                    <td><?= htmlspecialchars($joueur['poids']) ?> kg</td>
                     <td><?= htmlspecialchars($joueur['statut']) ?></td>
-                    <td>
-                        <a href="<?= BASE_URL ?>joueurs/modifier?id=<?= $joueur['id_joueur'] ?>">Modifier</a>
-                        <a href="<?= BASE_URL ?>joueurs/supprimer?id=<?= $joueur['id_joueur'] ?>" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</a>
+                    <td class="actions">
+                        <a href="<?= BASE_URL ?>joueurs/modifier?id=<?= $joueur['id_joueur'] ?>" class="btn btn-edit">Modifier</a>
+                        <a href="<?= BASE_URL ?>joueurs/supprimer?id=<?= $joueur['id_joueur'] ?>" 
+                           class="btn-delete" 
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?')">Supprimer</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

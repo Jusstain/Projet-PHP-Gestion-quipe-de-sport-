@@ -39,22 +39,35 @@ class ControleurJoueur {
     }
 
     public function modifier($id) {
+        error_log("Modifier joueur ID: " . $id); // Debug
+        
+        if (!$id) {
+            header('Location: ' . BASE_URL . 'joueurs/liste');
+            exit;
+        }
+
+        $joueur = $this->joueur->getJoueurParId($id);
+        if (!$joueur) {
+            header('Location: ' . BASE_URL . 'joueurs/liste');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->verifierCSRF();
-            if ($this->validerDonnees($_POST)) {
-                if ($this->joueur->modifier($id, $_POST)) {
-                    header('Location: ' . BASE_URL . 'joueurs/liste');
-                    exit;
-                } else {
-                    $this->erreurs['db'] = "Erreur lors de la modification";
-                }
+            if ($this->joueur->modifier($id, $_POST)) {
+                header('Location: ' . BASE_URL . 'joueurs/liste');
+                exit;
             }
         }
-        $joueur = $this->joueur->getJoueurParId($id);
+
         require_once __DIR__ . '/../vues/joueurs/modifier.php';
     }
 
     public function supprimer($id) {
+        if (!$id) {
+            header('Location: ' . BASE_URL . 'joueurs/liste');
+            exit;
+        }
+
         if ($this->joueur->supprimer($id)) {
             header('Location: ' . BASE_URL . 'joueurs/liste');
             exit;
