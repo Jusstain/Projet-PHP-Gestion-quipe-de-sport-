@@ -53,9 +53,13 @@ class ControleurJoueur {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if ($this->joueur->modifier($id, $_POST)) {
-                header('Location: ' . BASE_URL . 'joueurs/liste');
-                exit;
+            try {
+                if ($this->joueur->modifier($id, $_POST)) {
+                    header('Location: ' . BASE_URL . 'joueurs/liste');
+                    exit;
+                }
+            } catch (PDOException $e) {
+                $this->erreurs['licence'] = $e->getMessage(); // Capture de l'exception
             }
         }
 
@@ -130,3 +134,4 @@ class ControleurJoueur {
         return empty($this->erreurs);
     }
 }
+?>

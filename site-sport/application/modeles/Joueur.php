@@ -22,6 +22,20 @@ class Joueur {
     }
 
     public function ajouter($data) {
+        // Validation du numéro de licence : doit être composé de 8 chiffres
+        if (strlen($data['numero_licence']) != 8 || !preg_match('/^\d{8}$/', $data['numero_licence'])) {
+            throw new Exception('Le numéro de licence doit être composé de 8 chiffres.');
+        }
+
+        // Vérification si le numéro de licence existe déjà
+        $query = "SELECT * FROM " . $this->table . " WHERE numero_licence = :numero_licence";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute([':numero_licence' => $data['numero_licence']]);
+        if ($stmt->rowCount() > 0) {
+            throw new PDOException('Le numéro de licence existe déjà pour un autre joueur.');
+        }
+
+        // Code pour ajouter un joueur
         $query = "INSERT INTO " . $this->table . " 
                 (nom, prenom, numero_licence, date_naissance, taille, poids, statut, commentaire) 
                 VALUES (:nom, :prenom, :numero_licence, :date_naissance, :taille, :poids, :statut, :commentaire)";
@@ -41,6 +55,24 @@ class Joueur {
     }
 
     public function modifier($id, $data) {
+        // Validation du numéro de licence : doit être composé de 8 chiffres
+        if (strlen($data['numero_licence']) != 8 || !preg_match('/^\d{8}$/', $data['numero_licence'])) {
+            throw new Exception('Le numéro de licence doit être composé de 8 chiffres.');
+        }
+    
+        // Vérification si le numéro de licence existe déjà (exclure le joueur actuel)
+        $query = "SELECT * FROM " . $this->table . " WHERE numero_licence = :numero_licence AND id_joueur != :id";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute([
+            ':numero_licence' => $data['numero_licence'],
+            ':id' => $id
+        ]);
+        
+        if ($stmt->rowCount() > 0) {
+            throw new PDOException('Le numéro de licence existe déjà pour un autre joueur.');
+        }
+    
+        // Code pour modifier un joueur
         $query = "UPDATE " . $this->table . " 
                 SET nom = :nom, 
                     prenom = :prenom, 
@@ -66,6 +98,7 @@ class Joueur {
             ':commentaire' => $data['commentaire']
         ]);
     }
+    
 
     public function supprimer($id) {
         try {
@@ -78,3 +111,4 @@ class Joueur {
         }
     }
 }
+?>
