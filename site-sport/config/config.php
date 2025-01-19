@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Constantes de l'application
-define('BASE_URL', '/Projet-PHP-Gestion-quipe-de-sport-/site-sport/public/');
+define('BASE_URL', '/gestion-equipe-basketball/site-sport/public/');
 
 // Configuration de la base de données
 define('DB_HOST', 'localhost');
