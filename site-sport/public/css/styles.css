@@ -602,3 +602,16 @@ h2::after {
         grid-template-columns: 1fr;
     }
 }
+
+.role-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.role-section h5 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}

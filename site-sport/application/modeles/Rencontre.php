@@ -43,10 +43,18 @@ class Rencontre {
     }
 
     public function getJoueursSelectionnes($id_match) {
-        $query = "SELECT j.*, p.role, p.poste, p.evaluation 
-                 FROM Joueur j 
-                 INNER JOIN Participation p ON j.id_joueur = p.id_joueur 
-                 WHERE p.id_rencontre = :id_match";
+        $query = "SELECT j.*, p.id_rencontre, p.role as participation_role 
+              FROM Joueur j 
+              INNER JOIN Participation p ON j.id_joueur = p.id_joueur 
+              WHERE p.id_rencontre = :id_match
+              ORDER BY p.role, 
+                CASE j.role
+                    WHEN 'meneur' THEN 1
+                    WHEN 'arriere' THEN 2
+                    WHEN 'ailier' THEN 3
+                    WHEN 'ailier fort' THEN 4
+                    WHEN 'pivot' THEN 5
+                END";
         $stmt = $this->connexion->prepare($query);
         $stmt->execute([':id_match' => $id_match]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -89,27 +97,33 @@ class Rencontre {
     }
 
     public function getJoueursDisponibles($id_match) {
-        $query = "SELECT * FROM Joueur 
-                 WHERE statut = 'Actif' 
-                 AND id_joueur NOT IN (
-                    SELECT id_joueur 
-                    FROM Participation 
-                    WHERE id_rencontre = :id_match
-                 )";
+        $query = "SELECT j.* FROM Joueur j 
+             WHERE j.statut = 'Actif' 
+             AND j.id_joueur NOT IN (
+                SELECT p.id_joueur 
+                FROM Participation p 
+                WHERE p.id_rencontre = :id_match
+             )
+             ORDER BY CASE j.role
+                WHEN 'meneur' THEN 1
+                WHEN 'arriere' THEN 2
+                WHEN 'ailier' THEN 3
+                WHEN 'ailier fort' THEN 4
+                WHEN 'pivot' THEN 5
+             END";
         $stmt = $this->connexion->prepare($query);
         $stmt->execute([':id_match' => $id_match]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function ajouterJoueurAuMatch($id_match, $id_joueur) {
-        $query = "INSERT INTO Participation (id_rencontre, id_joueur, poste) 
-                  SELECT :match, :joueur, role 
-                  FROM Joueur 
-                  WHERE id_joueur = :joueur";
+    public function ajouterJoueurAuMatch($id_match, $id_joueur, $participation_role = 'remplacant') {
+        $query = "INSERT INTO Participation (id_rencontre, id_joueur, role) 
+              VALUES (:match, :joueur, :role)";
         $stmt = $this->connexion->prepare($query);
         return $stmt->execute([
             ':match' => $id_match,
-            ':joueur' => $id_joueur
+            ':joueur' => $id_joueur,
+            ':role' => $participation_role
         ]);
     }
 

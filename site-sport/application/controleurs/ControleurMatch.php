@@ -67,25 +67,19 @@ class ControleurMatch {
         $id_match = $_GET['id'];
         $match = $this->rencontre->getMatchParId($id_match);
         
-        // Handle form submissions
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['ajouter_joueurs'])) {
-                foreach ($_POST['joueurs'] as $id_joueur => $poste) {
-                    if (!empty($poste)) {
-                        $this->rencontre->ajouterJoueurAuMatch($id_match, $id_joueur, $poste);
-                    }
+            // Debug
+            error_log('POST data: ' . print_r($_POST, true));
+            
+            if (isset($_POST['ajouter_joueurs']) && !empty($_POST['joueurs'])) {
+                foreach ($_POST['joueurs'] as $id_joueur) {
+                    $this->rencontre->ajouterJoueurAuMatch($id_match, $id_joueur);
                 }
+                header('Location: ' . BASE_URL . 'matchs/selection?id=' . $id_match);
+                exit();
             }
-            
-            if (isset($_POST['retirer_joueur'])) {
-                $this->rencontre->retirerJoueurDuMatch($id_match, $_POST['retirer_joueur']);
-            }
-            
-            header('Location: ' . BASE_URL . 'matchs/selection?id=' . $id_match);
-            exit();
         }
         
-        // Get data for display
         $joueurs_disponibles = $this->rencontre->getJoueursDisponibles($id_match);
         $joueurs_selectionnes = $this->rencontre->getJoueursSelectionnes($id_match);
         
