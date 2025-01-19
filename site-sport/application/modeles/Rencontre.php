@@ -87,4 +87,38 @@ class Rencontre {
         }
         return true;
     }
+
+    public function getJoueursDisponibles($id_match) {
+        $query = "SELECT * FROM Joueur 
+                 WHERE statut = 'Actif' 
+                 AND id_joueur NOT IN (
+                    SELECT id_joueur 
+                    FROM Participation 
+                    WHERE id_rencontre = :id_match
+                 )";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute([':id_match' => $id_match]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function ajouterJoueurAuMatch($id_match, $id_joueur, $poste) {
+        $query = "INSERT INTO Participation (id_rencontre, id_joueur, poste) 
+                  VALUES (:match, :joueur, :poste)";
+        $stmt = $this->connexion->prepare($query);
+        return $stmt->execute([
+            ':match' => $id_match,
+            ':joueur' => $id_joueur,
+            ':poste' => $poste
+        ]);
+    }
+
+    public function retirerJoueurDuMatch($id_match, $id_joueur) {
+        $query = "DELETE FROM Participation 
+                  WHERE id_rencontre = :match AND id_joueur = :joueur";
+        $stmt = $this->connexion->prepare($query);
+        return $stmt->execute([
+            ':match' => $id_match,
+            ':joueur' => $id_joueur
+        ]);
+    }
 }

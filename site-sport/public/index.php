@@ -89,6 +89,11 @@ switch($route) {
         $controleur->selectionnerJoueurs($id);
         break;
         
+    case (preg_match('/^\/matchs\/selection\?id=\d+$/', $route) ? true : false):
+        $controleur = new ControleurMatch();
+        $controleur->selection();
+        break;
+        
     case '/matchs/evaluer':
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $controleur = new ControleurMatch();
@@ -99,6 +104,17 @@ switch($route) {
     case '/statistiques':
         $controleur = new ControleurStatistique();
         $controleur->afficher();
+        break;
+
+    // New match routes
+    case '/matchs/ajouter-joueur':
+        $controleur = new ControleurMatch();
+        $controleur->ajouterJoueur();
+        break;
+
+    case '/matchs/retirer-joueur':
+        $controleur = new ControleurMatch();
+        $controleur->retirerJoueur();
         break;
 
     default: 
