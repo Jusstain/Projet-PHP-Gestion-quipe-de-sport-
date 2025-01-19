@@ -85,8 +85,6 @@
                     <td><?= htmlspecialchars($match['lieu']) ?></td>
                     <td><?= ucfirst($match['resultat']) ?></td>
                     <td class="actions">
-                        <a href="<?= BASE_URL ?>matchs/evaluer?id=<?= $match['id_rencontre'] ?>" 
-                           class="btn-evaluate">Évaluer</a>
                         <a href="<?= BASE_URL ?>matchs/supprimer?id=<?= $match['id_rencontre'] ?>" 
                            class="btn-delete" 
                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce match ?');">Supprimer</a>

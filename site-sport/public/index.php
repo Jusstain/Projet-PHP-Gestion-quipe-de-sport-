@@ -128,6 +128,12 @@ switch($route) {
         $controleur->resultat();
         break;
 
+    case '/matchs/selection':
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $controleur = new ControleurMatch();
+        $controleur->selection();
+        break;
+
     default: 
         header("HTTP/1.0 404 Not Found");
         require_once __DIR__ . '/../application/vues/erreurs/404.php';

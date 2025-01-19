@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css">
 </head>
 <body>
+    <?php if (isset($_SESSION['erreur'])): ?>
+        <div class="alert alert-danger">
+            <?= $_SESSION['erreur'] ?>
+            <?php unset($_SESSION['erreur']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-success">
+            <?= $_SESSION['message'] ?>
+            <?php unset($_SESSION['message']); ?>
+        </div>
+    <?php endif; ?>
+
     <nav class="header">
         <a href="<?= BASE_URL ?>joueurs/liste">Joueurs</a>
         <a href="<?= BASE_URL ?>matchs/liste">Matchs</a>
@@ -47,7 +61,7 @@
             <!-- Joueurs Disponibles -->
             <div class="available-players">
                 <h4>Joueurs disponibles</h4>
-                <form method="POST">
+                <form method="POST" action="<?= BASE_URL ?>matchs/ajouter-joueur">
                     <input type="hidden" name="id_match" value="<?= $match['id_rencontre'] ?>">
                     <?php foreach($roles as $role => $numero): ?>
                         <?php if (isset($joueurs_disponibles_grouped[$role])): ?>
@@ -59,67 +73,75 @@
                                             <input type="checkbox" name="joueurs[]" value="<?= $joueur['id_joueur'] ?>">
                                             <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
                                         </label>
+                                        <select name="role_<?= $joueur['id_joueur'] ?>" class="role-select">
+                                            <option value="titulaire">Titulaire</option>
+                                            <option value="remplacant" selected>Remplaçant</option>
+                                        </select>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
                     <?php endforeach; ?>
-                    <button type="submit" name="ajouter_joueurs" class="btn btn-primary">Ajouter les joueurs</button>
+                    <button type="submit" name="ajouter_joueur" class="btn btn-primary">Ajouter les joueurs</button>
                 </form>
             </div>
 
             <!-- Joueurs Sélectionnés -->
             <div class="selected-players">
-                <h4>Joueurs sélectionnés</h4>
+                <h4>Joueurs sélectionnés</h4>                 
                 
                 <!-- Titulaires -->
                 <div class="titulaires">
                     <h5>Titulaires</h5>
-                    <?php foreach($roles as $role => $numero): 
-                        $titulaires = array_filter($joueurs_selectionnes_grouped[$role] ?? [], function($j) {
-                            return $j['participation_role'] === 'titulaire';
-                        });
-                        if (!empty($titulaires)): ?>
-                            <div class="role-section">
-                                <h6><?= ucfirst($role) ?> (<?= $numero ?>)</h6>
-                                <?php foreach($titulaires as $joueur): ?>
-                                    <div class="player-item">
-                                        <form method="POST" style="display: inline;">
-                                            <input type="hidden" name="retirer_joueur" value="<?= $joueur['id_joueur'] ?>">
-                                            <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
-                                            <button type="submit" class="btn btn-danger">Retirer</button>
-                                            <button type="submit" name="changer_role" value="remplacant" class="btn btn-secondary">→ Remplaçant</button>
-                                        </form>
-                                    </div>
-                                <?php endforeach; ?>
+                    <?php 
+                    $titulaires = array_filter($joueurs_selectionnes, function($j) {
+                        return $j['participation_role'] === 'Titulaire';
+                    });
+                    
+                    foreach($titulaires as $joueur): ?>
+                        <div class="player-item">
+                            <div class="player-info">
+                                <span class="player-name">
+                                    <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
+                                </span>
+                                <span class="player-role">
+                                    (<?= ucfirst($joueur['role']) ?>)
+                                </span>
                             </div>
-                        <?php endif; 
-                    endforeach; ?>
+                            <form method="POST" action="<?= BASE_URL ?>matchs/retirer-joueur" style="display: inline;">
+                                <input type="hidden" name="id_joueur" value="<?= $joueur['id_joueur'] ?>">
+                                <input type="hidden" name="id_match" value="<?= $match['id_rencontre'] ?>">
+                                <button type="submit" class="btn btn-danger">Retirer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>             
                 </div>
 
                 <!-- Remplaçants -->
                 <div class="remplacants">
                     <h5>Remplaçants</h5>
-                    <?php foreach($roles as $role => $numero): 
-                        $remplacants = array_filter($joueurs_selectionnes_grouped[$role] ?? [], function($j) {
-                            return $j['participation_role'] === 'remplacant';
-                        });
-                        if (!empty($remplacants)): ?>
-                            <div class="role-section">
-                                <h6><?= ucfirst($role) ?> (<?= $numero ?>)</h6>
-                                <?php foreach($remplacants as $joueur): ?>
-                                    <div class="player-item">
-                                        <form method="POST" style="display: inline;">
-                                            <input type="hidden" name="retirer_joueur" value="<?= $joueur['id_joueur'] ?>">
-                                            <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
-                                            <button type="submit" class="btn btn-danger">Retirer</button>
-                                            <button type="submit" name="changer_role" value="titulaire" class="btn btn-secondary">→ Titulaire</button>
-                                        </form>
-                                    </div>
-                                <?php endforeach; ?>
+                    <?php 
+                    $remplacants = array_filter($joueurs_selectionnes, function($j) {
+                        return $j['participation_role'] === 'Remplaçant';
+                    });
+                    
+                    foreach($remplacants as $joueur): ?>
+                        <div class="player-item">
+                            <div class="player-info">
+                                <span class="player-name">
+                                    <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
+                                </span>
+                                <span class="player-role">
+                                    (<?= ucfirst($joueur['role']) ?>)
+                                </span>
                             </div>
-                        <?php endif; 
-                    endforeach; ?>
+                            <form method="POST" action="<?= BASE_URL ?>matchs/retirer-joueur" style="display: inline;">
+                                <input type="hidden" name="id_joueur" value="<?= $joueur['id_joueur'] ?>">
+                                <input type="hidden" name="id_match" value="<?= $match['id_rencontre'] ?>">
+                                <button type="submit" class="btn btn-danger">Retirer</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>

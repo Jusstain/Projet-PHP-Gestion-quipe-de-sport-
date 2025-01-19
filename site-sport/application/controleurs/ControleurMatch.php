@@ -60,65 +60,53 @@ class ControleurMatch {
     }
 
     public function selection() {
-        if (!isset($_GET['id'])) {
-            header('Location: ' . BASE_URL . 'matchs/liste');
-            exit();
-        }
+        $id_match = isset($_GET['id']) ? $_GET['id'] : null;
         
-        $id_match = $_GET['id'];
-        $match = $this->rencontre->getMatchParId($id_match);
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Debug
-            error_log('POST data: ' . print_r($_POST, true));
+        if ($id_match) {
+            $match = $this->rencontre->getMatchParId($id_match);
+            $joueurs_disponibles = $this->rencontre->getJoueursActifs($id_match);
+            $joueurs_selectionnes = $this->rencontre->getJoueursSelectionnes($id_match);
             
-            if (isset($_POST['ajouter_joueurs']) && !empty($_POST['joueurs'])) {
-                foreach ($_POST['joueurs'] as $id_joueur) {
-                    $this->rencontre->ajouterJoueurAuMatch($id_match, $id_joueur);
-                }
-                header('Location: ' . BASE_URL . 'matchs/selection?id=' . $id_match);
-                exit();
-            }
+            $roles = [
+                'meneur' => '1',
+                'arriere' => '2',
+                'ailier' => '3',
+                'ailier fort' => '4',
+                'pivot' => '5'
+            ];
+            
+            require_once __DIR__ . '/../vues/matchs/selection_joueur.php';
         }
-        
-        $joueurs_disponibles = $this->rencontre->getJoueursDisponibles($id_match);
-        $joueurs_selectionnes = $this->rencontre->getJoueursSelectionnes($id_match);
-        
-        require_once __DIR__ . '/../vues/matchs/selection_joueur.php';
     }
 
     public function ajouterJoueur() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['joueurs']) && is_array($_POST['joueurs']) && isset($_POST['id_match'])) {
+                foreach ($_POST['joueurs'] as $id_joueur) {
+                    $role = isset($_POST['role_' . $id_joueur]) ? ucfirst($_POST['role_' . $id_joueur]) : 'Remplaçant';
+                    
+                    if (!$this->rencontre->ajouterJoueurAuMatch($_POST['id_match'], $id_joueur, $role)) {
+                        // L'erreur est déjà définie dans ajouterJoueurAuMatch
+                        header('Location: ' . BASE_URL . 'matchs/selection?id=' . $_POST['id_match']);
+                        exit();
+                    }
+                }
+                $_SESSION['message'] = "Joueurs ajoutés avec succès";
+            }
+            header('Location: ' . BASE_URL . 'matchs/selection?id=' . $_POST['id_match']);
             exit();
-        }
-
-        $id_match = $_POST['id_match'];
-        $id_joueur = $_POST['id_joueur'];
-        $poste = $_POST['poste'];
-
-        if ($this->rencontre->ajouterJoueurAuMatch($id_match, $id_joueur, $poste)) {
-            echo json_encode(['success' => true]);
-        } else {
-            http_response_code(500);
-            echo json_encode(['success' => false]);
         }
     }
 
     public function retirerJoueur() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_joueur']) && isset($_POST['id_match'])) {
+            if ($this->rencontre->retirerJoueurDuMatch($_POST['id_match'], $_POST['id_joueur'])) {
+                $_SESSION['message'] = "Joueur retiré avec succès";
+            } else {
+                $_SESSION['erreur'] = "Erreur lors du retrait du joueur";
+            }
+            header('Location: ' . BASE_URL . 'matchs/selection?id=' . $_POST['id_match']);
             exit();
-        }
-
-        $id_match = $_POST['id_match'];
-        $id_joueur = $_POST['id_joueur'];
-
-        if ($this->rencontre->retirerJoueurDuMatch($id_match, $id_joueur)) {
-            echo json_encode(['success' => true]);
-        } else {
-            http_response_code(500);
-            echo json_encode(['success' => false]);
         }
     }
 

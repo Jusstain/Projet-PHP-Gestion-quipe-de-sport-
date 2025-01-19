@@ -44,37 +44,6 @@
             </div>
         </div>
 
-        <!-- Statistiques des joueurs -->
-        <h3>Statistiques des joueurs</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Joueur</th>
-                    <th>Statut</th>
-                    <th>Poste préféré</th>
-                    <th>Titularisations</th>
-                    <th>Remplacements</th>
-                    <th>Moyenne évaluations</th>
-                    <th>Matchs consécutifs</th>
-                    <th>% Victoires</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($stats_joueurs as $joueur): ?>
-                <tr>
-                    <td><?= htmlspecialchars($joueur['nom']) ?> <?= htmlspecialchars($joueur['prenom']) ?></td>
-                    <td><?= htmlspecialchars($joueur['statut']) ?></td>
-                    <td><?= htmlspecialchars($joueur['poste_prefere']) ?></td>
-                    <td><?= $joueur['nb_titularisations'] ?></td>
-                    <td><?= $joueur['nb_remplacements'] ?></td>
-                    <td><?= number_format($joueur['moyenne_evaluations'], 2) ?></td>
-                    <td><?= $joueur['nb_matchs_consecutifs'] ?></td>
-                    <td><?= number_format($joueur['pourcentage_victoires'], 1) ?>%</td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-
         <a href="<?= BASE_URL ?>joueurs/liste" class="btn">Retour à la liste des joueurs</a>
     </div>
 </body>
