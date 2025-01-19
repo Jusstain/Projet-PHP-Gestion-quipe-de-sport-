@@ -28,13 +28,13 @@
                         <div class="player-item">
                             <label>
                                 <?= htmlspecialchars($joueur['nom'] . ' ' . $joueur['prenom']) ?>
-                                <select name="joueurs[<?= $joueur['id_joueur'] ?>]">
-                                    <option value="">Sélectionner un poste</option>
-                                    <option value="pivot">Pivot</option>
-                                    <option value="ailier">Ailier</option>
-                                    <option value="arriere">Arrière</option>
-                                    <option value="meneur">Meneur</option>
-                                </select>
+                                (<?= htmlspecialchars($joueur['role']) ?> - 
+                                <?= ($joueur['role'] === 'meneur' ? '1' : 
+                                    ($joueur['role'] === 'arriere' ? '2' : 
+                                    ($joueur['role'] === 'ailier' ? '3' : 
+                                    ($joueur['role'] === 'ailier_fort' ? '4' : 
+                                    ($joueur['role'] === 'pivot' ? '5' : ''))))) ?>)
+                                <input type="checkbox" name="joueurs[]" value="<?= $joueur['id_joueur'] ?>">
                             </label>
                         </div>
                     <?php endforeach; ?>

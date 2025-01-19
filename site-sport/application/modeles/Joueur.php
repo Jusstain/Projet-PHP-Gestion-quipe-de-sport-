@@ -8,7 +8,10 @@ class Joueur {
     }
 
     public function getTousLesJoueurs() {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY nom, prenom";
+        $query = "SELECT *, 
+                  COALESCE(commentaire, '') as commentaire 
+                  FROM Joueur 
+                  ORDER BY nom, prenom";
         $stmt = $this->connexion->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,83 +25,50 @@ class Joueur {
     }
 
     public function ajouter($data) {
-        // Validation du numéro de licence : doit être composé de 8 chiffres
-        if (strlen($data['numero_licence']) != 8 || !preg_match('/^\d{8}$/', $data['numero_licence'])) {
-            throw new Exception('Le numéro de licence doit être composé de 8 chiffres.');
-        }
-
-        // Vérification si le numéro de licence existe déjà
-        $query = "SELECT * FROM " . $this->table . " WHERE numero_licence = :numero_licence";
-        $stmt = $this->connexion->prepare($query);
-        $stmt->execute([':numero_licence' => $data['numero_licence']]);
-        if ($stmt->rowCount() > 0) {
-            throw new PDOException('Le numéro de licence existe déjà pour un autre joueur.');
-        }
-
-        // Code pour ajouter un joueur
-        $query = "INSERT INTO " . $this->table . " 
-                (nom, prenom, numero_licence, date_naissance, taille, poids, statut, commentaire) 
-                VALUES (:nom, :prenom, :numero_licence, :date_naissance, :taille, :poids, :statut, :commentaire)";
+        $query = "INSERT INTO Joueur (nom, prenom, date_naissance, taille, poids, role, commentaire, numero_licence, statut) 
+                  VALUES (:nom, :prenom, :date_naissance, :taille, :poids, :role, :commentaire, :numero_licence, :statut)";
         
         $stmt = $this->connexion->prepare($query);
-        
         return $stmt->execute([
             ':nom' => $data['nom'],
             ':prenom' => $data['prenom'],
-            ':numero_licence' => $data['numero_licence'],
             ':date_naissance' => $data['date_naissance'],
-            ':taille' => $data['taille'],
-            ':poids' => $data['poids'],
-            ':statut' => $data['statut'] ?? 'Actif',
-            ':commentaire' => $data['commentaire'] ?? null
+            ':taille' => (float)$data['taille'],
+            ':poids' => (float)$data['poids'],
+            ':role' => $data['role'],
+            ':commentaire' => !empty($data['commentaire']) ? $data['commentaire'] : null,
+            ':numero_licence' => $data['numero_licence'],
+            ':statut' => 'Actif'
         ]);
     }
 
     public function modifier($id, $data) {
-        // Validation du numéro de licence : doit être composé de 8 chiffres
-        if (strlen($data['numero_licence']) != 8 || !preg_match('/^\d{8}$/', $data['numero_licence'])) {
-            throw new Exception('Le numéro de licence doit être composé de 8 chiffres.');
-        }
-    
-        // Vérification si le numéro de licence existe déjà (exclure le joueur actuel)
-        $query = "SELECT * FROM " . $this->table . " WHERE numero_licence = :numero_licence AND id_joueur != :id";
-        $stmt = $this->connexion->prepare($query);
-        $stmt->execute([
-            ':numero_licence' => $data['numero_licence'],
-            ':id' => $id
-        ]);
-        
-        if ($stmt->rowCount() > 0) {
-            throw new PDOException('Le numéro de licence existe déjà pour un autre joueur.');
-        }
-    
-        // Code pour modifier un joueur
-        $query = "UPDATE " . $this->table . " 
-                SET nom = :nom, 
-                    prenom = :prenom, 
-                    numero_licence = :numero_licence, 
-                    date_naissance = :date_naissance, 
-                    taille = :taille, 
-                    poids = :poids, 
-                    statut = :statut, 
-                    commentaire = :commentaire 
-                WHERE id_joueur = :id";
+        $query = "UPDATE Joueur 
+                  SET nom = :nom, 
+                      prenom = :prenom, 
+                      date_naissance = :date_naissance,
+                      taille = :taille,
+                      poids = :poids,
+                      role = :role,
+                      commentaire = :commentaire,
+                      numero_licence = :numero_licence,
+                      statut = :statut
+                  WHERE id_joueur = :id_joueur";
         
         $stmt = $this->connexion->prepare($query);
-        
         return $stmt->execute([
-            ':id' => $id,
+            ':id_joueur' => $id,
             ':nom' => $data['nom'],
             ':prenom' => $data['prenom'],
-            ':numero_licence' => $data['numero_licence'],
             ':date_naissance' => $data['date_naissance'],
-            ':taille' => $data['taille'],
-            ':poids' => $data['poids'],
-            ':statut' => $data['statut'],
-            ':commentaire' => $data['commentaire']
+            ':taille' => (float)$data['taille'],
+            ':poids' => (float)$data['poids'],
+            ':role' => $data['role'],
+            ':commentaire' => !empty($data['commentaire']) ? $data['commentaire'] : null,
+            ':numero_licence' => $data['numero_licence'],
+            ':statut' => $data['statut']
         ]);
     }
-    
 
     public function supprimer($id) {
         try {

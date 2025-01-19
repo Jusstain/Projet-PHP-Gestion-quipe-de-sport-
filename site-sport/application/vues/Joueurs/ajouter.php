@@ -24,42 +24,58 @@
             </div>
         <?php endif; ?>
         
-        <form method="POST" action="">
+        <form method="POST" class="form-container">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <input type="hidden" name="id_joueur" value="<?= $joueur['id_joueur'] ?>">
+            
             <div class="form-group">
-                <label for="nom">Nom :</label>
-                <input type="text" id="nom" name="nom" required>
+                <label for="numero_licence">Numéro de licence:</label>
+                <input type="text" id="numero_licence" name="numero_licence" 
+                       value="<?= htmlspecialchars($joueur['numero_licence'] ?? '') ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="prenom">Prénom :</label>
+                <label for="nom">Nom:</label>
+                <input type="text" id="nom" name="nom" 
+                       value="<?= htmlspecialchars($joueur['nom'] ?? '') ?>" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="prenom">Prénom:</label>
                 <input type="text" id="prenom" name="prenom" required>
             </div>
-
+            
             <div class="form-group">
-                <label for="numero_licence">Numéro de licence :</label>
-                <input type="text" id="numero_licence" name="numero_licence" required>
-            </div>
-
-            <div class="form-group">
-                <label for="date_naissance">Date de naissance :</label>
+                <label for="date_naissance">Date de naissance:</label>
                 <input type="date" id="date_naissance" name="date_naissance" required>
             </div>
 
             <div class="form-group">
-                <label for="taille">Taille (en m) :</label>
-                <input type="number" id="taille" name="taille" step="0.01" required>
+                <label for="taille">Taille (m):</label>
+                <input type="number" id="taille" name="taille" step="0.01" min="1.00" max="2.50" required>
             </div>
 
             <div class="form-group">
-                <label for="poids">Poids (en kg) :</label>
-                <input type="number" id="poids" name="poids" required>
+                <label for="poids">Poids (kg):</label>
+                <input type="number" id="poids" name="poids" step="0.1" min="40" max="150" required>
             </div>
 
             <div class="form-group">
-                <label for="statut">Statut :</label>
+                <label for="role">Poste:</label>
+                <select name="role" id="role" required>
+                    <option value="">Sélectionner un poste</option>
+                    <option value="meneur">Meneur</option>
+                    <option value="arriere">Arrière</option>
+                    <option value="ailier">Ailier</option>
+                    <option value="ailier fort">Ailier Fort</option>
+                    <option value="pivot">Pivot</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="statut">Statut:</label>
                 <select id="statut" name="statut" required>
-                    <option value="Actif">Actif</option>
+                    <option value="Actif" selected>Actif</option>
                     <option value="Blessé">Blessé</option>
                     <option value="Suspendu">Suspendu</option>
                     <option value="Absent">Absent</option>
@@ -67,14 +83,12 @@
             </div>
 
             <div class="form-group">
-                <label for="commentaire">Commentaire :</label>
+                <label for="commentaire">Commentaire:</label>
                 <textarea id="commentaire" name="commentaire" rows="4"></textarea>
             </div>
 
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Ajouter le joueur</button>
-                <a href="<?= BASE_URL ?>joueurs/liste" class="btn btn-secondary">Retour à la liste</a>
-            </div>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <a href="<?= BASE_URL ?>joueurs/liste" class="btn btn-secondary">Annuler</a>
         </form>
     </div>
 </body>

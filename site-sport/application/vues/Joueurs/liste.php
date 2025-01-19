@@ -31,8 +31,12 @@
                 <tr>
                     <th>Nom</th>
                     <th>Prénom</th>
-                    <th>Licence</th>
+                    <th>Date de naissance</th>
+                    <th>Taille (m)</th>
+                    <th>Poids (kg)</th>
+                    <th>Poste</th>
                     <th>Statut</th>
+                    <th>Commentaires</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -41,8 +45,12 @@
                 <tr>
                     <td><?= htmlspecialchars($joueur['nom']) ?></td>
                     <td><?= htmlspecialchars($joueur['prenom']) ?></td>
-                    <td><?= htmlspecialchars($joueur['numero_licence']) ?></td>
+                    <td><?= htmlspecialchars($joueur['date_naissance']) ?></td>
+                    <td><?= number_format((float)$joueur['taille'], 2) ?></td>
+                    <td><?= number_format((float)$joueur['poids'], 1) ?></td>
+                    <td><?= ucfirst($joueur['role']) ?></td>
                     <td><?= htmlspecialchars($joueur['statut']) ?></td>
+                    <td><?= !empty($joueur['commentaire']) ? htmlspecialchars($joueur['commentaire']) : 'Aucun commentaire pour ce joueur' ?></td>
                     <td class="actions">
                         <a href="<?= BASE_URL ?>joueurs/modifier?id=<?= $joueur['id_joueur'] ?>" class="btn btn-edit">Modifier</a>
                         <a href="<?= BASE_URL ?>joueurs/supprimer?id=<?= $joueur['id_joueur'] ?>" 

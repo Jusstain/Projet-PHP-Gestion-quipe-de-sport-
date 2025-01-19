@@ -26,6 +26,7 @@
         
         <form method="POST" action="" class="form-container">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+            <input type="hidden" name="id_joueur" value="<?= $joueur['id_joueur'] ?>">
             <div class="form-group">
                 <label for="nom">Nom :</label>
                 <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($joueur['nom']) ?>" required>
@@ -63,6 +64,18 @@
                     <option value="Blessé" <?= $joueur['statut'] === 'Blessé' ? 'selected' : '' ?>>Blessé</option>
                     <option value="Suspendu" <?= $joueur['statut'] === 'Suspendu' ? 'selected' : '' ?>>Suspendu</option>
                     <option value="Absent" <?= $joueur['statut'] === 'Absent' ? 'selected' : '' ?>>Absent</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Poste:</label>
+                <select name="role" id="role" required>
+                    <option value="">Sélectionner un poste</option>
+                    <option value="meneur" <?= $joueur['role'] === 'meneur' ? 'selected' : '' ?>>Meneur</option>
+                    <option value="arriere" <?= $joueur['role'] === 'arriere' ? 'selected' : '' ?>>Arrière</option>
+                    <option value="ailier" <?= $joueur['role'] === 'ailier' ? 'selected' : '' ?>>Ailier</option>
+                    <option value="ailier fort" <?= $joueur['role'] === 'ailier fort' ? 'selected' : '' ?>>Ailier Fort</option>
+                    <option value="pivot" <?= $joueur['role'] === 'pivot' ? 'selected' : '' ?>>Pivot</option>
                 </select>
             </div>
 

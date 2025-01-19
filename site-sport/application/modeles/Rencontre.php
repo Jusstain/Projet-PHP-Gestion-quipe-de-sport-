@@ -101,14 +101,15 @@ class Rencontre {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function ajouterJoueurAuMatch($id_match, $id_joueur, $poste) {
+    public function ajouterJoueurAuMatch($id_match, $id_joueur) {
         $query = "INSERT INTO Participation (id_rencontre, id_joueur, poste) 
-                  VALUES (:match, :joueur, :poste)";
+                  SELECT :match, :joueur, role 
+                  FROM Joueur 
+                  WHERE id_joueur = :joueur";
         $stmt = $this->connexion->prepare($query);
         return $stmt->execute([
             ':match' => $id_match,
-            ':joueur' => $id_joueur,
-            ':poste' => $poste
+            ':joueur' => $id_joueur
         ]);
     }
 
