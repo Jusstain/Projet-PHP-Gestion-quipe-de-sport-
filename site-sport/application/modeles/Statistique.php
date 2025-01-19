@@ -17,7 +17,14 @@ class Statistique {
         
         $stmt = $this->connexion->prepare($query);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Calcul des pourcentages
+        $result['pourcentage_victoires'] = $result['total_matchs'] > 0 ? round(($result['victoires'] / $result['total_matchs']) * 100, 2) : 0;
+        $result['pourcentage_defaites'] = $result['total_matchs'] > 0 ? round(($result['defaites'] / $result['total_matchs']) * 100, 2) : 0;
+        $result['pourcentage_nuls'] = $result['total_matchs'] > 0 ? round(($result['nuls'] / $result['total_matchs']) * 100, 2) : 0;
+        
+        return $result;
     }
 
     public function getStatsJoueurs() {
@@ -46,3 +53,4 @@ class Statistique {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+?>

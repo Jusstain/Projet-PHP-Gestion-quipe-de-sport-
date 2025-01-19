@@ -12,12 +12,14 @@ class ControleurStatistique {
     }
 
     public function afficher() {
-        // Get match statistics
+        // Get match statistics with percentages
         $stats_matchs = $this->statistique->getStatsMatchs();
         
         // Get player statistics
         $stats_joueurs = $this->statistique->getStatsJoueurs();
         
+        // Pass data to the view
         require_once __DIR__ . '/../vues/statistiques/index.php';
     }
 }
+?>
