@@ -153,4 +153,37 @@ class Rencontre {
             return false;
         }
     }
+
+    public function setResultat($id_match, $resultat) {
+        $query = "UPDATE Rencontre 
+                  SET resultat = :resultat, 
+                      statut = 'passé' 
+                  WHERE id_rencontre = :id";
+        $stmt = $this->connexion->prepare($query);
+        return $stmt->execute([
+            ':id' => $id_match,
+            ':resultat' => $resultat
+        ]);
+    }
+
+    public function getMatchsPasses() {
+        $query = "SELECT * FROM Rencontre WHERE statut = 'passé' ORDER BY date_heure DESC";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getMatchsAVenir() {
+        $query = "SELECT * FROM Rencontre WHERE resultat IS NULL ORDER BY date_heure ASC";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getMatchsTermines() {
+        $query = "SELECT * FROM Rencontre WHERE resultat IS NOT NULL ORDER BY date_heure DESC";
+        $stmt = $this->connexion->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

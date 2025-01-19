@@ -615,3 +615,26 @@ h2::after {
     margin-bottom: 1rem;
     font-size: 1.1rem;
 }
+
+/* Result Form */
+.select-resultat {
+    padding: 5px;
+    margin-right: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn-resultat {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.result-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}

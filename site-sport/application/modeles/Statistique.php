@@ -52,5 +52,16 @@ class Statistique {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateStats($id_match, $resultat) {
+        // Mise à jour des statistiques globales
+        $query = "UPDATE Statistiques SET 
+                  total_matchs = total_matchs + 1,
+                  " . $resultat . "s = " . $resultat . "s + 1
+                  WHERE id_equipe = 1"; // Assumant ID 1 pour l'équipe principale
+        
+        $stmt = $this->connexion->prepare($query);
+        return $stmt->execute();
+    }
 }
 ?>

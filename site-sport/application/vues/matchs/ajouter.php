@@ -44,12 +44,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="numero_licence">Numéro de Licence (8 chiffres max):</label>
-                <input type="text" id="numero_licence" name="numero_licence" maxlength="8" pattern="^\d{8}$" required>
-                <small>Le numéro de licence doit être composé de 8 chiffres.</small>
-            </div>
-
             <button type="submit" class="btn-submit">Ajouter le match</button>
         </form>
         

@@ -12,7 +12,8 @@ class ControleurMatch {
     }
 
     public function liste() {
-        $matchs = $this->rencontre->getTousLesMatchs();
+        $matchs_a_venir = $this->rencontre->getMatchsAVenir();
+        $matchs_passes = $this->rencontre->getMatchsPasses(); // Changed from matchs_termines to matchs_passes
         require_once __DIR__ . '/../vues/matchs/liste.php';
     }
 
@@ -130,6 +131,18 @@ class ControleurMatch {
             $_SESSION['erreur'] = "Erreur lors de la suppression du match";
         }
         
+        header('Location: ' . BASE_URL . 'matchs/liste');
+        exit();
+    }
+
+    public function resultat() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_match']) && isset($_POST['resultat'])) {
+            if ($this->rencontre->setResultat($_POST['id_match'], $_POST['resultat'])) {
+                $_SESSION['message'] = "Résultat enregistré avec succès";
+            } else {
+                $_SESSION['erreur'] = "Erreur lors de l'enregistrement du résultat";
+            }
+        }
         header('Location: ' . BASE_URL . 'matchs/liste');
         exit();
     }

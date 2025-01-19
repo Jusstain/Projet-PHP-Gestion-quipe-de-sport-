@@ -123,6 +123,11 @@ switch($route) {
         $controleur->supprimer($id);
         break;
 
+    case '/matchs/resultat':
+        $controleur = new ControleurMatch();
+        $controleur->resultat();
+        break;
+
     default: 
         header("HTTP/1.0 404 Not Found");
         require_once __DIR__ . '/../application/vues/erreurs/404.php';
