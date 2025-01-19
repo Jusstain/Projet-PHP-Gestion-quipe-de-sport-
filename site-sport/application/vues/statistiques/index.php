@@ -29,15 +29,18 @@
         <div class="stats-container">
             <div class="stat-card">
                 <h4>Victoires</h4>
-                <p><?= $stats_matchs['victoires'] ?> (<?= $stats_matchs['pourcentage_victoires'] ?>%)</p>
+                <p>Nombre : <?= isset($stats_matchs['victoires']) ? $stats_matchs['victoires'] : 0 ?></p>
+                <p>Pourcentage : <?= isset($stats_matchs['victoires']) ? number_format($stats_matchs['pourcentage_victoires'], 2) : 0 ?>%</p>
             </div>
             <div class="stat-card">
                 <h4>Défaites</h4>
-                <p><?= $stats_matchs['defaites'] ?></p>
+                <p>Nombre : <?= isset($stats_matchs['defaites']) ? $stats_matchs['defaites'] : 0 ?></p>
+                <p>Pourcentage : <?= isset($stats_matchs['defaites']) ? number_format($stats_matchs['pourcentage_defaites'], 2) : 0 ?>%</p>
             </div>
             <div class="stat-card">
                 <h4>Matchs nuls</h4>
-                <p><?= $stats_matchs['nuls'] ?></p>
+                <p>Nombre : <?= isset($stats_matchs['nuls']) ? $stats_matchs['nuls'] : 0 ?></p>
+                <p>Pourcentage : <?= isset($stats_matchs['nuls']) ? number_format($stats_matchs['pourcentage_nuls'], 2) : 0 ?>%</p>
             </div>
         </div>
 
