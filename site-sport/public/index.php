@@ -117,6 +117,12 @@ switch($route) {
         $controleur->retirerJoueur();
         break;
 
+    case (preg_match('/^\/matchs\/supprimer/', $route) ? true : false):
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $controleur = new ControleurMatch();
+        $controleur->supprimer($id);
+        break;
+
     default: 
         header("HTTP/1.0 404 Not Found");
         require_once __DIR__ . '/../application/vues/erreurs/404.php';

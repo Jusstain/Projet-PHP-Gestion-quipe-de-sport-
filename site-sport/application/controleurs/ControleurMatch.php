@@ -120,4 +120,17 @@ class ControleurMatch {
             echo json_encode(['success' => false]);
         }
     }
+
+    public function supprimer($id = null) {
+        $id_match = $id ?? $_GET['id'] ?? null;
+        
+        if ($id_match && $this->rencontre->supprimerMatch($id_match)) {
+            $_SESSION['message'] = "Match supprimé avec succès";
+        } else {
+            $_SESSION['erreur'] = "Erreur lors de la suppression du match";
+        }
+        
+        header('Location: ' . BASE_URL . 'matchs/liste');
+        exit();
+    }
 }

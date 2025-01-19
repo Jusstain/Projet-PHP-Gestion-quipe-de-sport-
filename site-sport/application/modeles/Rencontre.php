@@ -136,4 +136,21 @@ class Rencontre {
             ':joueur' => $id_joueur
         ]);
     }
+
+    public function supprimerMatch($id) {
+        try {
+            // D'abord supprimer les participations liées au match
+            $query = "DELETE FROM Participation WHERE id_rencontre = :id";
+            $stmt = $this->connexion->prepare($query);
+            $stmt->execute([':id' => $id]);
+            
+            // Ensuite supprimer le match
+            $query = "DELETE FROM " . $this->table . " WHERE id_rencontre = :id";
+            $stmt = $this->connexion->prepare($query);
+            return $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            error_log("Erreur de suppression : " . $e->getMessage());
+            return false;
+        }
+    }
 }
